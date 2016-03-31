@@ -160,17 +160,23 @@ def _compile_zinc(ctx, jars):
   )
 
   cmd = """
-set -e
-# Make jar file deterministic by setting the timestamp of files
-find {tmp_out} | xargs touch -t 198001010000
-touch -t 198001010000 {manifest}
-# jar cmf {manifest} {out} -C {tmp_out} .
-pushd {tmp_out}
-find . | sort | xargs -n 1 -IREPLACE echo REPLACE >> filelist.txt
-touch -t 198001010000 filelist.txt
-zip -X -q out.jar -@ < filelist.txt
-popd
-mv {tmp_out}/out.jar {out}
+output=$(
+  set -e
+  # Make jar file deterministic by setting the timestamp of files
+  find {tmp_out} | xargs touch -t 198001010000
+  touch -t 198001010000 {manifest}
+  # jar cmf {manifest} {out} -C {tmp_out} .
+  pushd {tmp_out}
+  find . | sort | xargs -n 1 -IREPLACE echo REPLACE >> filelist.txt
+  touch -t 198001010000 filelist.txt
+  zip -X -q out.jar -@ < filelist.txt
+  popd
+  mv {tmp_out}/out.jar {out}
+) || {
+  exitcode=$?
+  echo $$output
+  exit $$exitcode
+}
 """ + _get_res_cmd(ctx)
   cmd = cmd.format(
       tmp_out=tmp_out_dir.path,
