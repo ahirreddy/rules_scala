@@ -24,8 +24,6 @@ import scala.sys.process._
 
 import com.typesafe.zinc.{Main => ZincMain, Nailgun, ZincClient}
 
-import com.databricks.bazel.ZipDir
-
 
 /**
  * An example implementation of a worker process that is used for integration tests.
@@ -127,9 +125,11 @@ object ScalaWorker {
   // Extract a src jar to a temporary directory and return the list of extracted files
   private def buildJar(classDir: File, destJar: File): Unit = {
     val classes = listFiles(classDir)
+      .map(new File(_))
       .map(_.setLastModified(198001010))
-      .map(_.getAbsolutePath).sorted
-    ZipDir.zipDir(destJar, classDir, classes.toArray)
+      .map(_.getAbsolutePath)
+      .sorted.toArray
+    ZipDir.zipDir(destJar, classDir, classes)
   }
 
   @throws[IOException]
