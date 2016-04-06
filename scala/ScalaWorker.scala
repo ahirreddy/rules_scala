@@ -21,6 +21,7 @@ import java.util.UUID
 
 import scala.collection.JavaConverters._
 import scala.sys.process._
+import scala.util.control.NonFatal
 
 import com.typesafe.zinc.{Main => ZincMain, Nailgun, ZincClient}
 
@@ -182,7 +183,7 @@ object ScalaWorker {
             )
             buildJar(tempClassDir, destJar)
           } catch {
-            case e: Exception =>
+            case NonFatal(e) =>
               // We use System.out.println as not to accidentally write to real stdout
               System.out.println("Startup Args:")
               args.foreach(arg => System.out.println("Arg: " + arg))
