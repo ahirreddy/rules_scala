@@ -15,12 +15,13 @@ java_binary(
         "@sbt_interface_0_13_9_jar//jar",
         "@compiler_interface_0_13_9_sources_jar//jar",
         "@nailgun_server_0_9_1_jar//jar",
+        "zip-dir"
     ],
 )
 
 java_import(
     name = "scala-worker-lib-import",
-    jars = ["scala-worker-lib_deploy.jar", "zip-dir"],
+    jars = ["scala-worker-lib_deploy.jar"],
 )
 
 scala_library(
