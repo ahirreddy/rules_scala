@@ -24,6 +24,8 @@ import scala.sys.process._
 
 import com.typesafe.zinc.{Main => ZincMain, Nailgun, ZincClient}
 
+import com.databricks.bazel.ZipDir
+
 
 /**
  * An example implementation of a worker process that is used for integration tests.
@@ -122,6 +124,14 @@ object ScalaWorker {
     listFiles(tempDir)
   }
 
+  // Extract a src jar to a temporary directory and return the list of extracted files
+  private def buildJar(classDir: File, destJar: File): Seq[String] = {
+    val classes = listFiles(classDir)
+      .map(_.setLastModified(198001010000))
+      .map(_.getAbsolutePath).sorted
+
+  }
+
   @throws[IOException]
   private def runPersistentWorker(args: Array[String]) {
     val originalStdOut = System.out
@@ -160,12 +170,16 @@ object ScalaWorker {
               }
             }
             awaitServer()
+
+            val tempClassDir = Files.createTempDirectory(null).toFile
+
             exitCode = zincClient.run(
-              args = clientArgs,
+              args = clientArgs ++ Seq("-d", tempClassDir.getAbsolutePath),
               cwd = new File(System.getProperty("user.dir")),
               out = ps,
               err = ps
             )
+
           } catch {
             case e: Exception =>
               // We use System.out.println as not to accidentally write to real stdout

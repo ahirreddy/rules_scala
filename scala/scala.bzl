@@ -122,7 +122,6 @@ def _compile_zinc(ctx, jars):
     "-sbt-interface", ctx.file._sbt_interface_jar.path,
     "-compiler-interface", ctx.file._compiler_interface_jar.path,
     "-cp {jars}",
-    "-d", tmp_out_dir.path,
   ]
   flags = " ".join(flags)
   flags = flags.format(
