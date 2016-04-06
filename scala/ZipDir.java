@@ -26,6 +26,7 @@ public class ZipDir {
   private static void addToZipFile(String fileName, File f, ZipOutputStream zos) throws FileNotFoundException, IOException {
     FileInputStream fis = new FileInputStream(f);
     ZipEntry zipEntry = new ZipEntry(fileName);
+    zipEntry.setTime(0);
     zos.putNextEntry(zipEntry);
 
     byte[] bytes = new byte[1024];
