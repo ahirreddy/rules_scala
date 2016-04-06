@@ -146,7 +146,7 @@ def _compile_zinc(ctx, jars):
       ctx.file._zinc,
       ctx.file._zinc_compiler_jar,
       ctx.file._nailgun_server_jar,
-      "--dest-jar " + ctx.outputs.jar
+      "--dest-jar " + ctx.outputs.jar.path
   ]
   compiler_classpath = ":".join([f.path for f in classpath_jars])
 
