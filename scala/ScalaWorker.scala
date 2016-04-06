@@ -120,7 +120,7 @@ object ScalaWorker {
     val current = f.listFiles
     val files = current.filter(_.isFile).map(_.getAbsolutePath)
     val directories = current.filter(_.isDirectory)
-    files ++ directories ++ directories.flatMap(listFiles)
+    files ++ directories.map(_.getAbsolutePath) ++ directories.flatMap(listFiles)
   }
 
   // Extract a src jar to a temporary directory and return the list of extracted files
