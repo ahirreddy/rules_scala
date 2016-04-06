@@ -127,7 +127,7 @@ object ScalaWorker {
   // Extract a src jar to a temporary directory and return the list of extracted files
   private def buildJar(classDir: File, destJar: File): Seq[String] = {
     val classes = listFiles(classDir)
-      .map(_.setLastModified(198001010000))
+      .map(_.setLastModified(198001010))
       .map(_.getAbsolutePath).sorted
 
   }
