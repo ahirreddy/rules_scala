@@ -156,12 +156,16 @@ object ScalaWorker {
           System.setErr(ps)
 
           var clientArgs: Seq[String] = null
+          var destJar: File = null
 
           try {
             clientArgs = request.getArgumentsList.asScala.flatMap { arg =>
               // srcjars must be extracted before we can pass them to zinc
               if (arg.endsWith(".srcjar")) {
                 expandSrcJar(arg)
+              } else if (arg.startsWith("--dest-jar")) {
+                destJar = new File(arg.split(" ")(1))
+                Seq.empty
               } else {
                 Seq(arg)
               }
@@ -176,7 +180,7 @@ object ScalaWorker {
               out = ps,
               err = ps
             )
-
+            buildJar(tempClassDir, destJar)
           } catch {
             case e: Exception =>
               // We use System.out.println as not to accidentally write to real stdout

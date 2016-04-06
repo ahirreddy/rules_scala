@@ -146,41 +146,18 @@ def _compile_zinc(ctx, jars):
       ctx.file._zinc,
       ctx.file._zinc_compiler_jar,
       ctx.file._nailgun_server_jar,
+      "--dest-jar " + ctx.outputs.jar.path
   ]
   compiler_classpath = ":".join([f.path for f in classpath_jars])
 
   ctx.action(
       inputs=list(jars) + ctx.files.srcs + [ctx.outputs.manifest, argfile, work_unit_args] + classpath_jars,
-      outputs=[tmp_out_dir],
+      outputs=[ctx.outputs.jar],
       executable=worker,
       progress_message="Zinc Worker: %s" % ctx.label.name,
       mnemonic="Scala",
       arguments=ctx.attr.worker_args + [compiler_classpath] + ["@" + argfile.path],
   )
-
-  cmd = """
-set -e
-# Make jar file deterministic by setting the timestamp of files
-find {tmp_out} | xargs touch -t 198001010000
-touch -t 198001010000 {manifest}
-# jar cmf {manifest} {out} -C {tmp_out} .
-pushd {tmp_out}
-find . | sort | xargs -n 1 -IREPLACE echo REPLACE >> filelist.txt
-touch -t 198001010000 filelist.txt
-zip -X -q out.jar -@ < filelist.txt
-popd
-mv {tmp_out}/out.jar {out}
-""" + _get_res_cmd(ctx)
-  cmd = cmd.format(
-      tmp_out=tmp_out_dir.path,
-      out=ctx.outputs.jar.path,
-      manifest=ctx.outputs.manifest.path)
-
-  ctx.action(
-      inputs=[tmp_out_dir, ctx.outputs.manifest],
-      outputs=[ctx.outputs.jar],
-      command=cmd,
-      progress_message="Building Jar: %s" % ctx.label)
 
 
 def _get_res_cmd(ctx):
