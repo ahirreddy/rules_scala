@@ -181,7 +181,8 @@ object ScalaWorker {
               out = ps,
               err = ps
             )
-            // buildJar(tempClassDir, destJar)
+
+            buildJar(tempClassDir, destJar)
           } catch {
             case NonFatal(e) =>
               // We use System.out.println as not to accidentally write to real stdout
