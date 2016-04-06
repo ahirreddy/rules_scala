@@ -112,8 +112,6 @@ mv {out}_tmp/out.jar {out}
 def _compile_zinc(ctx, jars):
   worker = ctx.executable.worker
 
-  tmp_out_dir = ctx.new_file(ctx.outputs.jar.path + "_tmp")
-
   flags = [
     "-fork-java",
     "-scala-compiler", ctx.file._scala_compiler_jar.path,
