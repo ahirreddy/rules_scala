@@ -184,7 +184,7 @@ object ScalaWorker {
 
             buildJar(tempClassDir, destJar)
           } catch {
-            case NonFatal(e) =>
+            case e: Throwable =>
               // We use System.out.println as not to accidentally write to real stdout
               System.out.println("Startup Args:")
               args.foreach(arg => System.out.println("Arg: " + arg))
