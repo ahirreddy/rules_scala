@@ -116,6 +116,13 @@ object ScalaWorker {
     files ++ directories.flatMap(listFiles)
   }
 
+  private def listFilesAndDirectories(f: File): Seq[String] = {
+    val current = f.listFiles
+    val files = current.filter(_.isFile).map(_.getAbsolutePath)
+    val directories = current.filter(_.isDirectory)
+    files ++ directories ++ directories.flatMap(listFiles)
+  }
+
   // Extract a src jar to a temporary directory and return the list of extracted files
   private def expandSrcJar(path: String): Seq[String] = {
     val tempDir = Files.createTempDirectory(null).toFile
@@ -125,8 +132,7 @@ object ScalaWorker {
 
   // Extract a src jar to a temporary directory and return the list of extracted files
   private def buildJar(classDir: File, destJar: File): Unit = {
-    val classes = listFiles(classDir).map(new File(_)).sortBy(_.getAbsolutePath).toArray
-    throw new Exception(classes.toSeq.toString)
+    val classes = listFilesAndDirectories(classDir).map(new File(_)).sortBy(_.getAbsolutePath).toArray
     classes.foreach(_.setLastModified(198001010))
     ZipDir.zipDir(destJar, classDir, classes)
   }

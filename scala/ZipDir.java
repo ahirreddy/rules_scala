@@ -24,18 +24,20 @@ public class ZipDir {
   }
 
   private static void addToZipFile(String fileName, File f, ZipOutputStream zos) throws FileNotFoundException, IOException {
-    FileInputStream fis = new FileInputStream(f);
     ZipEntry zipEntry = new ZipEntry(fileName);
     zipEntry.setTime(0);
     zos.putNextEntry(zipEntry);
 
-    byte[] bytes = new byte[1024];
-    int length;
-    while ((length = fis.read(bytes)) >= 0) {
-      zos.write(bytes, 0, length);
+    if (f.isFile()) {
+      FileInputStream fis = new FileInputStream(f);
+      byte[] bytes = new byte[1024];
+      int length;
+      while ((length = fis.read(bytes)) >= 0) {
+        zos.write(bytes, 0, length);
+      }
+      fis.close();
     }
 
     zos.closeEntry();
-    fis.close();
   }
 }
