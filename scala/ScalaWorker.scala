@@ -105,6 +105,7 @@ object ScalaWorker {
       runPersistentWorker(args)
     } else {
       // This is a single invocation of the example that exits after it processed the request.
+      println(args.toSeq)
       ZincMain.run(args, cwd = None)
     }
   }
