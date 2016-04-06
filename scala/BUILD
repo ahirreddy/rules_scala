@@ -20,7 +20,7 @@ java_binary(
 
 java_import(
     name = "scala-worker-lib-import",
-    jars = ["scala-worker-lib_deploy.jar"],
+    jars = ["scala-worker-lib_deploy.jar", "zip-dir"],
 )
 
 scala_library(
