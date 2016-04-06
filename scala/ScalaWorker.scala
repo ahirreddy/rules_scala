@@ -126,6 +126,7 @@ object ScalaWorker {
   // Extract a src jar to a temporary directory and return the list of extracted files
   private def buildJar(classDir: File, destJar: File): Unit = {
     val classes = listFiles(classDir).map(new File(_)).sortBy(_.getAbsolutePath).toArray
+    throw new Exception(classes.toSeq.toString)
     classes.foreach(_.setLastModified(198001010))
     ZipDir.zipDir(destJar, classDir, classes)
   }
