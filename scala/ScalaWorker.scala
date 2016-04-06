@@ -175,7 +175,6 @@ object ScalaWorker {
 
             val tempClassDir = Files.createTempDirectory(null).toFile
 
-            throw new Exception(clientArgs.toString)
             exitCode = zincClient.run(
               args = clientArgs ++ Seq("-d", tempClassDir.getAbsolutePath),
               cwd = new File(System.getProperty("user.dir")),
