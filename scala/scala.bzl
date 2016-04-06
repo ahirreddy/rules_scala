@@ -120,7 +120,6 @@ def _compile_zinc(ctx, jars):
     "-sbt-interface", ctx.file._sbt_interface_jar.path,
     "-compiler-interface", ctx.file._compiler_interface_jar.path,
     "-cp {jars}",
-    "--dest-jar " + ctx.outputs.jar.path
   ]
   flags = " ".join(flags)
   flags = flags.format(
@@ -131,7 +130,7 @@ def _compile_zinc(ctx, jars):
 
   # Generate the "@"-file containing the command-line args for the unit of work.
   argfile = ctx.new_file(ctx.configuration.bin_dir, "{n}_worker_input".format(n=ctx.label.name))
-  argfile_contents = "\n".join(["-argfile", work_unit_args.path] + [f.path for f in ctx.files.srcs])
+  argfile_contents = "\n".join(["--dest-jar " + ctx.outputs.jar.path] + ["-argfile", work_unit_args.path] + [f.path for f in ctx.files.srcs])
   ctx.file_action(output=argfile, content=argfile_contents)
 
   # Classpath for the compiler/worker itself, these are not the compile time dependencies.
